@@ -19,20 +19,18 @@ start = 0
 end = duration
 for i in range(len(deleted_sections)):
     section = deleted_sections[i]
-    if i != len(deleted_sections) - 1:
-        base += f"[0:a]atrim={start}:{section['start']}[a{i}];"
-        start_and_ends.append([section['start'], section['end']])
-    else:
-        base += f"[0:a]atrim={start}:{end}[a{i}];"
-        start_and_ends.append([section['start'], end])
+    base += f"[0:a]atrim={start}:{section['start']}[a{i}];"
+    start_and_ends.append([section['start'], section['end']])
     start = section['end']
 
+base += f"[0:a]atrim={start}:{end}[a{len(deleted_sections)}];"
+
 concat_base = ""
-for i in range(len(deleted_sections)):
+for i in range(len(deleted_sections) + 1):
     concat_base += f"[a{i}]"
 
 base += concat_base
-base += f"concat=n={len(deleted_sections)}:a=1:v=0[outa]\""
+base += f"concat=n={len(deleted_sections) + 1}:a=1:v=0[outa]\""
 
 base += " -map \"[outa]\" out.mp3"
 
